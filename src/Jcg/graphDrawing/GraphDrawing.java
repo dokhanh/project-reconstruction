@@ -49,10 +49,12 @@ public abstract class GraphDrawing<X extends Point_>{
 		//for test
 		//System.out.println(edges.length);
 		Fenetre f=new Fenetre();
+		f.addPoints(((ArrayList<Point_2>)this.points));
 		for(int i=0;i<edges.length;i++) {
 			//for test
-			//System.out.println((Point_2)this.getPoint(edges[i][0]));
-			f.addSegment((Point_2)this.getPoint(edges[i][0]), (Point_2)this.getPoint(edges[i][1]));
+			//System.out.println(edges[i][1]);
+			//System.out.println(getPoint(0));
+			f.addFatSegment((Point_2)this.getPoint(edges[i][0]), (Point_2)this.getPoint(edges[i][1]));
 		}
 	}
 
