@@ -86,7 +86,7 @@ public class SpectralDrawing_2<X extends Point_> extends GraphDrawing<X>{
 	
 	public void computeDrawing() {
 		this.laplacian=this.LaplacianMatrix();
-		System.out.println("Laplacian Matrix computed");
+		//System.out.println("Laplacian Matrix computed");
 
 		double[] eValues=this.Eigenvalues(laplacian);
 		//for test
@@ -99,7 +99,7 @@ public class SpectralDrawing_2<X extends Point_> extends GraphDrawing<X>{
 			this.points.add(p);
 		}
 		//for test
-		System.out.println("ok");
+		//System.out.println("ok");
 	}
 
 	/**
