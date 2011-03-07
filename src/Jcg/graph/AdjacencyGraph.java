@@ -138,7 +138,7 @@ public class AdjacencyGraph implements Graph{
     		numberOfEdges=numberOfEdges+degree(i);
     	numberOfEdges=numberOfEdges/2;
     	//for test
-    	System.out.println(numberOfEdges);
+    	//System.out.println(numberOfEdges);
     	
     	int[][] result=new int[numberOfEdges][2];
     	int compt=0;
