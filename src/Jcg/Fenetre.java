@@ -14,6 +14,8 @@ import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.util.Vector;
 
+import javax.swing.JFrame;
+
 import Jcg.geometry.Point_2;
 import Jcg.polyhedron.Halfedge;
 import Jcg.polyhedron.Polyhedron_3;
@@ -25,7 +27,7 @@ public class Fenetre extends Canvas {
 
 	private static final long serialVersionUID = 1L;
 	private BufferedImage backgroudImage=null;
-	protected Frame frame;
+	public static Frame frame=new JFrame("JFrame");
 	
    double boundaryThickness=0.5;
     // listes des points et des segments
@@ -58,7 +60,7 @@ public class Fenetre extends Canvas {
     // qu'apres avoir appele repaint()
     public void ajoutePoint(double x, double y) {
 	pl.add(new Point2D.Double(x,y));
-	update(x,y);
+	//update(x,y);
     }
     
     public void addPoints(Point_2[] points) {
@@ -225,9 +227,9 @@ public class Fenetre extends Canvas {
      *
      */
     public Fenetre() {
-	frame = new Frame("Fenetre");
+	((JFrame)frame).getContentPane().removeAll();
 	frame.add(this);
-	frame.setSize(400, 400);
+	frame.setSize(600, 600);
 	frame.addWindowListener(new WindowAdapter() {
 		public void windowClosing(WindowEvent e) {
 		    System.exit(0);
