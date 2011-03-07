@@ -54,7 +54,7 @@ public abstract class GraphDrawing<X extends Point_>{
 			//for test
 			//System.out.println(edges[i][1]);
 			//System.out.println(getPoint(0));
-			f.addFatSegment((Point_2)this.getPoint(edges[i][0]), (Point_2)this.getPoint(edges[i][1]));
+			f.addSegment((Point_2)this.getPoint(edges[i][0]), (Point_2)this.getPoint(edges[i][1]));
 		}
 	}
 
