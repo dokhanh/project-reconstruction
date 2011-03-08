@@ -135,7 +135,7 @@ public class GraphOfTemoins {
     
     /**
      * Pour l'affichage du graphe, on utilise la classe SpectralDrawing_2.<p>Attention:
-     * afin de pouvoir bien afficher, il faut d'abord ajouter les sommets du graphe
+     * afin de pouvoir bien afficher, il faut d'abord ajouter en ordre les sommets du graphe
      * au SpectralDrawing_2. C'est essentiel.
      */
     public void draw() {
@@ -168,7 +168,7 @@ public class GraphOfTemoins {
     		showPoints();
     	}
     	else {
-    		temoins.reconstruction(temoins.W.get(0), 2);
+    		temoins.reconstruction(temoins.W.get((int)(Math.random()*temoins.W.size())), 2);
     		constructGraph();
     		draw();
     		//for test
