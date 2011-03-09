@@ -190,6 +190,6 @@ public class GraphOfTemoins {
      */
     public static void main (String[] args) {
     	GraphOfTemoins gtm=new GraphOfTemoins(args[0]);
-    	gtm.reconstructAndView(100);
+    	gtm.reconstructAndView(14);
     }
 }

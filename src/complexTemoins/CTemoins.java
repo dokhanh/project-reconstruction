@@ -16,7 +16,7 @@ import Jcg.triangulations2D.TriangulationDSVertex_2;
  *
  */
 
-public class CTemoins extends Delaunay_2 {
+public class CTemoins {
 	/**
 	 * La liste de points P.
 	 */
@@ -51,7 +51,7 @@ public class CTemoins extends Delaunay_2 {
      * s'inspire de la méthode de triangulation Delauney_2, mais en fait finalement
      * ça sert à rien.
      */
-    public TriangulationDSVertex_2<Point_2> insert(Point_2 p) {
+    public void insert(Point_2 p) {
     	if (!W.contains(p)) throw new Error("Le point "+p+" n'est pas contenu dans l'ensemble de points de depart");
         PointTemoins point=(PointTemoins)p;
     	temoins.add(point);
@@ -82,7 +82,6 @@ public class CTemoins extends Delaunay_2 {
         		}
         	}
         }
-        return new TriangulationDSVertex_2<Point_2>(p);
     }
     
     /**
