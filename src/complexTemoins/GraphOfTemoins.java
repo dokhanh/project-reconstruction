@@ -134,6 +134,14 @@ public class GraphOfTemoins {
     	}
     }
     
+    /**
+     * Calculer le nb de composantes connexes du graphe créé lors du fonctionnement de la
+     * méthode reconstruction de las classe CTemoins.<p>Attention: car cette fonction
+     * est basée sur le graphe de GraphOfTemoins, il faut construire ce graph (
+     * res. mettre à jour) par la méthode constructGraph (res. updateGraph) avant
+     * d'appeler cette fonction.
+     * @return un int nombre de composantes connexes.
+     */
     public int nbOfComposants() {
     	int nbOfComposants=0;
     	int nbIndex=0;
@@ -168,6 +176,14 @@ public class GraphOfTemoins {
     	return nbOfComposants;
     }
     
+    /**
+     * Similaire to la méthode nbOfComposants, mais calculer le nb de cycles du
+     * graphe crée.<p>Attention: car cette fonction
+     * est basée sur le graphe de GraphOfTemoins, il faut construire ce graph (
+     * res. mettre à jour) par la méthode constructGraph (res. updateGraph) avant
+     * d'appeler cette fonction.
+     * @return un int nb de cycles.
+     */
     public int nbDeCycles() {
     	LinkedList<Integer> pointsPasser=new LinkedList<Integer>();
     	HashMap<Integer, LinkedList<Integer>> voisins=new HashMap<Integer, LinkedList<Integer>>();
