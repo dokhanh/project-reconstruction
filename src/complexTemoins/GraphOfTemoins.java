@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 
 import Jcg.Fenetre;
 import Jcg.geometry.Point_2;
@@ -133,6 +134,77 @@ public class GraphOfTemoins {
     	}
     }
     
+    public int nbOfComposants() {
+    	int nbOfComposants=0;
+    	int nbIndex=0;
+    	int[] etiquette=new int[this.graph.sizeVertices()];
+    	for (int i=0;i<graph.sizeVertices();i++) {
+    		etiquette[i]=-1;
+    	}
+    	int[][] listOfEdges=this.graph.getEdges();
+    	for (int i=0;i<listOfEdges.length;i++) {
+    		int a=listOfEdges[i][0];
+    		int b=listOfEdges[i][1];
+    		if (etiquette[a]==-1 && etiquette[b]==-1) {
+    			etiquette[a]=nbIndex;
+    			etiquette[b]=nbIndex;
+    			nbOfComposants+=1;
+    			nbIndex+=1;
+    		}
+    		else {
+    			if (etiquette[a]==-1 || etiquette[b]==-1) {
+    				if (etiquette[a]==-1) etiquette[a]=etiquette[b];
+    				if (etiquette[b]==-1) etiquette[b]=etiquette[a];
+    			}
+    			else if (etiquette[a]!=etiquette[b]) {
+    				nbOfComposants-=1;
+    				int l=etiquette[b];
+        			for (int k=0;k<this.graph.sizeVertices();k++) {
+        				if (etiquette[k]==l) etiquette[k]=etiquette[a];
+        			}
+    			}
+    		}
+    	}
+    	return nbOfComposants;
+    }
+    
+    public int nbDeCycles() {
+    	LinkedList<Integer> pointsPasser=new LinkedList<Integer>();
+    	HashMap<Integer, LinkedList<Integer>> voisins=new HashMap<Integer, LinkedList<Integer>>();
+    	for (int i=0;i<graph.sizeVertices();i++) {
+    		voisins.put(i, new LinkedList<Integer>());
+    		pointsPasser.add(i);
+    	}
+    	int[][] edges=graph.getEdges();
+    	for (int i=0;i<edges.length;i++) {
+    		voisins.get(edges[i][0]).add(edges[i][1]);
+    		voisins.get(edges[i][1]).add(edges[i][0]);
+    	}
+    	int nbDeCycles=0;
+    	LinkedList<Integer> queue=new LinkedList<Integer>();
+    	while (!pointsPasser.isEmpty()) {
+    		if (queue.isEmpty()) {
+    			int cur=pointsPasser.removeLast();
+    			queue.add(cur);
+    		}
+    		int cur=queue.removeLast();
+    		LinkedList<Integer> voisinsOfCur=voisins.get(cur);
+    		for (int voisin:voisinsOfCur) {
+    			if (!pointsPasser.contains(voisin)) {
+    				nbDeCycles+=1;
+    				voisins.get(voisin).remove((Integer)cur);
+    			}
+    			else {
+    				voisins.get(voisin).remove((Integer)cur);
+    				pointsPasser.remove((Integer)voisin);
+    				queue.addLast(voisin);
+    			}
+    		}
+    		voisins.put(cur, new LinkedList<Integer>());
+    	}
+    	return nbDeCycles;
+    }
+    
     /**
      * Pour l'affichage du graphe, on utilise la classe SpectralDrawing_2.<p>Attention:
      * afin de pouvoir bien afficher, il faut d'abord ajouter en ordre les sommets du graphe
@@ -168,7 +240,7 @@ public class GraphOfTemoins {
     		showPoints();
     	}
     	else {
-    		temoins.reconstruction(temoins.W.get((int)(Math.random()*temoins.W.size())), 2);
+    		temoins.reconstruction(temoins.W.get(0), 2);
     		constructGraph();
     		draw();
     		//for test
@@ -178,7 +250,7 @@ public class GraphOfTemoins {
         		updateGraph();
         		draw();
         		//for test
-        		System.out.println(i);
+        		System.out.println(i+" "+this.nbOfComposants()+" "+this.nbDeCycles());
         	}
     	}
     }
@@ -190,6 +262,6 @@ public class GraphOfTemoins {
      */
     public static void main (String[] args) {
     	GraphOfTemoins gtm=new GraphOfTemoins(args[0]);
-    	gtm.reconstructAndView(14);
+    	gtm.reconstructAndView(16);
     }
 }
