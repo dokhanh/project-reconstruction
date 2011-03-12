@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 
 import Jcg.Fenetre;
+import Jcg.GraphData;
 import Jcg.geometry.Point_2;
 import Jcg.graph.AdjacencyGraph;
 import Jcg.graphDrawing.SpectralDrawing_2;
@@ -256,17 +257,29 @@ public class GraphOfTemoins {
     		showPoints();
     	}
     	else {
+    		LinkedList<Integer> nbOfComposants=new LinkedList<Integer>();
+    		LinkedList<Integer> nbOfCycles=new LinkedList<Integer>();
     		temoins.reconstruction(temoins.W.get(0), 2);
     		constructGraph();
     		draw();
     		//for test
-    		System.out.println(2);
+    		int nbComposants=this.nbOfComposants();
+    		int nbCycles=this.nbDeCycles();
+    		System.out.println(2+" "+nbComposants+" "+nbCycles);
+    		nbOfComposants.add(nbComposants);
+    		nbOfCycles.add(nbCycles);
+    		GraphData.showData(nbOfComposants, nbOfCycles);
     		for (int i=3;i<=nbIterations;i++) {
         		temoins.reconstruction(temoins.W.get(0), i);
         		updateGraph();
         		draw();
         		//for test
-        		System.out.println(i+" "+this.nbOfComposants()+" "+this.nbDeCycles());
+        		nbComposants=this.nbOfComposants();
+        		nbCycles=this.nbDeCycles();
+        		System.out.println(i+" "+nbComposants+" "+nbCycles);
+        		nbOfComposants.add(nbComposants);
+        		nbOfCycles.add(nbCycles);
+        		GraphData.showData(nbOfComposants, nbOfCycles);
         	}
     	}
     }
@@ -278,6 +291,6 @@ public class GraphOfTemoins {
      */
     public static void main (String[] args) {
     	GraphOfTemoins gtm=new GraphOfTemoins(args[0]);
-    	gtm.reconstructAndView(16);
+    	gtm.reconstructAndView(100);
     }
 }
