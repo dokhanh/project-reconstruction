@@ -196,7 +196,6 @@ public class Fenetre extends Canvas {
     	    g.draw(l);
     	for (Point2D p: pl)
     	    paint(g, p, Color.red);
-
     	g.setStroke(new BasicStroke(lineThickness*3));
     	g.setColor(Color.blue);
     	for (Line2D l:  fatSegmentsList) {
