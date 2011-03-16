@@ -71,12 +71,12 @@ public class CTemoins {
         			pTemoins.distanceToP=pTemoins.distanceTo(pTemoins.first);
         		}
         		else {
-        			if (pTemoins.distanceTo(point)<pTemoins.distanceTo(pTemoins.first)) {
+        			if (pTemoins.distanceTo(point)<pTemoins.distanceToP) {
         				pTemoins.second=pTemoins.first;
         				pTemoins.first=point;
         				pTemoins.distanceToP=pTemoins.distanceTo(point);
         			}
-        			else if (pTemoins.distanceTo(point)>=pTemoins.distanceTo(pTemoins.first) && pTemoins.distanceTo(point)<pTemoins.distanceTo(pTemoins.second)) {
+        			else if (pTemoins.distanceTo(point)<pTemoins.distanceTo(pTemoins.second)) {
         				pTemoins.second=point;
         			}
         		}
