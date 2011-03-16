@@ -34,12 +34,6 @@ public class GraphOfTemoins {
     AdjacencyGraph graph;
     
     /**
-     * C'est la valeur absolue maximale de coordonnées de points dans le plan.
-     * Jusqu'à mtn ça sert à rien, tous sont automatiquement réglés.
-     */
-    double taille;
-    
-    /**
      * Correspond chaque point à son ordre. On l'utilise à cause de l'utilisation
      * de la classe AdjacencyGraph.
      */
@@ -74,7 +68,6 @@ public class GraphOfTemoins {
     	try {
     		String line=br.readLine();
     		String[] mots=line.split(" ");
-    		taille=Double.parseDouble(mots[0])/2;
     		while (br.ready()) {
     			line=br.readLine();
     			mots=line.split(" ");
@@ -291,6 +284,6 @@ public class GraphOfTemoins {
      */
     public static void main (String[] args) {
     	GraphOfTemoins gtm=new GraphOfTemoins(args[0]);
-    	gtm.reconstructAndView(20);
+    	gtm.reconstructAndView(8);
     }
 }
