@@ -16,37 +16,41 @@ public class PointTemoins extends Point_2 {
 	/**
 	 * Le premier point dans P le plus proche.
 	 */
-    public PointTemoins first;
+    private PointTemoins first;
     
     /**
      * Le deuxième point dans P le plus proche (sauf first).
      */
-    public PointTemoins second;
+    private PointTemoins second;
     
     /**
      * La distance à l'ensemble P.
      */
-    double distanceToP;
+    private double distanceToP;
+    private double secondDistanceToP;
+    private int index;
     
     /**
      * Simple construction.
      */
-    public PointTemoins() {
+    public PointTemoins(int index) {
     	super();
     	first=null;
     	second=null;
     	distanceToP=-1;
+    	this.index=index;
     }
     
     /**
      * Construction à partie d'un point 2D. On fait simplement la copie.
      * @param p Point 2D.
      */
-    public PointTemoins (Point_2 p) {
+    public PointTemoins (Point_2 p, int index) {
     	super(p);
     	first=null;
     	second=null;
     	distanceToP=-1;
+    	this.index=index;
     }
     
     /**
@@ -57,5 +61,45 @@ public class PointTemoins extends Point_2 {
     public double distanceTo (PointTemoins q) {
     	Vector_2 vector=new Vector_2(this, q);
     	return Math.sqrt((Double)vector.squaredLength());
+    }
+    
+    public PointTemoins getFirstNearestPointToP() {
+    	return this.first;
+    }
+    
+    public PointTemoins getSecondNearestPointToP() {
+    	return this.second;
+    }
+    
+    public double getFirstDistanceToP() {
+    	return this.distanceToP;
+    }
+    
+    public double getSecondDistanceToP() {
+    	return this.secondDistanceToP;
+    }
+    
+    public void setFirstNearestPoint(PointTemoins p) {
+    	this.first=p;
+    }
+    
+    public void setSecondNearestPoint(PointTemoins p) {
+    	this.second=p;
+    }
+    
+    public void setFirstDistanceToP(double d) {
+    	this.distanceToP=d;
+    }
+    
+    public void setSecondDistanceToP(double d) {
+    	this.secondDistanceToP=d;
+    }
+    
+    public int getIndex() {
+    	return this.index;
+    }
+    
+    public void setIndex(int in) {
+    	this.index=in;
     }
 }
