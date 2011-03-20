@@ -25,19 +25,13 @@ public class GraphOfTemoins {
 	/**
 	 * Contient W et P, pas plus.
 	 */
-    CTemoins temoins;
+    private CTemoins temoins;
     
     /**
      * La structure de graphe. Il faut quand même savoir enfin quels sont les points
      * qui sont reliés.
      */
-    AdjacencyGraph graph;
-    
-    /**
-     * Correspond chaque point à son ordre. On l'utilise à cause de l'utilisation
-     * de la classe AdjacencyGraph.
-     */
-    HashMap<PointTemoins, Integer> mapping;
+    private AdjacencyGraph graph;
     
     /**
      * Construction, en sachant W et P.
@@ -45,10 +39,9 @@ public class GraphOfTemoins {
      */
     public GraphOfTemoins(CTemoins temoins) {
     	this.temoins=temoins;
-    	mapping=new HashMap<PointTemoins, Integer>();
     	int nb=0;
-    	for (PointTemoins pointT:temoins.W) {
-    		mapping.put(pointT, nb);
+    	for (PointTemoins pointT:temoins.getCloud()) {
+    		pointT.setIndex(nb);
     		nb+=1;
     	}
     	graph=new AdjacencyGraph(nb);
@@ -73,16 +66,16 @@ public class GraphOfTemoins {
     			mots=line.split(" ");
     			double x=Double.parseDouble(mots[0]);
     			double y=Double.parseDouble(mots[1]);
-    			PointTemoins point=new PointTemoins(new Point_2(x,y));
-    			this.temoins.W.add(point);
+    			PointTemoins point=new PointTemoins(new Point_2(x,y), 0);
+    			this.temoins.getCloud().add(point);
     		}
     		br.close();
     	} catch (IOException e) {
     		e.printStackTrace();
     	}
     	int nb=0;
-    	for (PointTemoins pointT:temoins.W) {
-    		mapping.put(pointT, nb);
+    	for (PointTemoins pointT:temoins.getCloud()) {
+    		pointT.setIndex(nb);
     		nb+=1;
     	}
     	graph=new AdjacencyGraph(nb);
@@ -95,7 +88,6 @@ public class GraphOfTemoins {
      */
     public GraphOfTemoins(String filename) {
     	this.temoins=new CTemoins();
-    	mapping=new HashMap<PointTemoins, Integer>();
     	readFromAFile(filename);
     }
     
@@ -105,9 +97,9 @@ public class GraphOfTemoins {
      * l'affichage.
      */
     public void constructGraph() {
-    	for (PointTemoins pointT:temoins.W) {
-    		if (pointT.first!=null && pointT.second!=null) {
-    			graph.addEdge(mapping.get(pointT.first), mapping.get(pointT.second));
+    	for (PointTemoins pointT:temoins.getCloud()) {
+    		if (pointT.getFirstNearestPointToP()!=null && pointT.getSecondNearestPointToP()!=null) {
+    			graph.addEdge(pointT.getFirstNearestPointToP().getIndex(), pointT.getSecondNearestPointToP().getIndex());
     		}
     	}
     }
@@ -123,8 +115,8 @@ public class GraphOfTemoins {
     			if (graph.adjacent(i, j)) graph.removeEdge(i, j);
     		}
     	}
-    	for (PointTemoins pointT:temoins.W) {
-    		graph.addEdge(mapping.get(pointT.first), mapping.get(pointT.second));
+    	for (PointTemoins pointT:temoins.getCloud()) {
+    		graph.addEdge(pointT.getFirstNearestPointToP().getIndex(), pointT.getSecondNearestPointToP().getIndex());
     	}
     }
     
@@ -224,8 +216,8 @@ public class GraphOfTemoins {
     	SpectralDrawing_2<PointTemoins> spd=new SpectralDrawing_2<PointTemoins>(this.graph);
     	spd.points=new ArrayList<PointTemoins>();
     	PointTemoins[] arrayP=new PointTemoins[graph.sizeVertices()];
-    	for (PointTemoins point:mapping.keySet()) {
-    		arrayP[mapping.get(point)]=point;
+    	for (PointTemoins point:temoins.getCloud()) {
+    		arrayP[point.getIndex()]=point;
     	}
     	for (int i=0;i<graph.sizeVertices();i++) spd.points.add(arrayP[i]);
     	spd.computeDrawing();
@@ -238,43 +230,47 @@ public class GraphOfTemoins {
      */
     public void showPoints() {
     	Fenetre f=new Fenetre();
-		for (PointTemoins p:this.temoins.W) f.addPoint(p);
+		for (PointTemoins p:this.temoins.getCloud()) f.addPoint(p);
     }
     
     /**
      * Reconstruction pas à pas.
      * @param nbIterations Nombre d'itérations.
      */
-    public void reconstructAndView (int nbIterations) {
-    	if (nbIterations<=1) {
+    public void reconstructAndView (PointTemoins startingPoint, int nbDeTemoins) {
+    	if (nbDeTemoins<=1) {
     		showPoints();
     	}
     	else {
     		LinkedList<Integer> nbOfComposants=new LinkedList<Integer>();
     		LinkedList<Integer> nbOfCycles=new LinkedList<Integer>();
-    		temoins.reconstruction(temoins.W.get(0), 2);
-    		constructGraph();
-    		draw();
-    		//for test
-    		int nbComposants=this.nbOfComposants();
-    		int nbCycles=this.nbDeCycles();
-    		System.out.println(2+" "+nbComposants+" "+nbCycles);
-    		nbOfComposants.add(nbComposants);
-    		nbOfCycles.add(nbCycles);
-    		GraphData.showData(nbOfComposants, nbOfCycles);
-    		for (int i=3;i<=nbIterations;i++) {
-        		temoins.reconstruction(temoins.W.get(0), i);
-        		updateGraph();
+    		this.temoins.insert(startingPoint);
+    		for (int i=2;i<=nbDeTemoins;i++) {
+        		PointTemoins pointChoisi=null;
+        		for (PointTemoins pointT:temoins.getCloud()) {
+        			if (pointChoisi==null || pointChoisi.getFirstDistanceToP()<pointT.getFirstDistanceToP()) pointChoisi=pointT;
+        		}
+        		temoins.insert(pointChoisi);
+        		if (i==1) constructGraph();
+        		else updateGraph();
         		draw();
-        		//for test
-        		nbComposants=this.nbOfComposants();
-        		nbCycles=this.nbDeCycles();
+        		int nbComposants=this.nbOfComposants();
+        		int nbCycles=this.nbDeCycles();
         		System.out.println(i+" "+nbComposants+" "+nbCycles);
         		nbOfComposants.add(nbComposants);
         		nbOfCycles.add(nbCycles);
         		GraphData.showData(nbOfComposants, nbOfCycles);
         	}
     	}
+    }
+    
+    public void reconstruction (PointTemoins startingPoint, int nbDeTemoins) {
+    	temoins.reconstruction(startingPoint, nbDeTemoins);
+    	constructGraph();
+		draw();
+		int nbComposants=this.nbOfComposants();
+		int nbCycles=this.nbDeCycles();
+		System.out.println(nbDeTemoins+" "+nbComposants+" "+nbCycles);
     }
     
     /**
@@ -284,6 +280,6 @@ public class GraphOfTemoins {
      */
     public static void main (String[] args) {
     	GraphOfTemoins gtm=new GraphOfTemoins(args[0]);
-    	gtm.reconstructAndView(8);
+    	gtm.reconstructAndView(gtm.temoins.getCloud().get(0), 27);
     }
 }
