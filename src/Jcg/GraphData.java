@@ -24,7 +24,8 @@ public class GraphData extends JPanel {
 	public GraphData (int[] array1, int[] array2) {
 		this.data1=array1;
 		this.data2=array2;
-		PAD=data1.length;
+		//PAD=data1.length;
+		PAD=15;
 	}
 	
 	public GraphData (LinkedList<Integer> list1, LinkedList<Integer> list2) {
@@ -34,7 +35,8 @@ public class GraphData extends JPanel {
 			data1[i]=list1.get(i);
 			data2[i]=list2.get(i);
 		}
-		PAD=data1.length;
+		//PAD=data1.length;
+		PAD=15;
 	}
 	
 	protected void paintComponent(Graphics g) {
@@ -46,8 +48,10 @@ public class GraphData extends JPanel {
         int h = getHeight();
         // Draw ordinate.
         g2.draw(new Line2D.Double(PAD, PAD, PAD, h-PAD));
+        //g2.draw(new Line2D.Double(5, 5, 5, h-5));
         // Draw abcissa.
         g2.draw(new Line2D.Double(PAD, h-PAD, w-PAD, h-PAD));
+        //g2.draw(new Line2D.Double(5, h-5, w-5, h-5));
         // Draw labels.
         Font font = g2.getFont();
         FontRenderContext frc = g2.getFontRenderContext();
