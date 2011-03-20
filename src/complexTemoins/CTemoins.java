@@ -3,6 +3,7 @@ package complexTemoins;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import Jcg.GraphData;
 import Jcg.geometry.Point_2;
 import Jcg.triangulations2D.Delaunay_2;
 import Jcg.triangulations2D.TriangulationDSVertex_2;
@@ -20,12 +21,20 @@ public class CTemoins {
 	/**
 	 * La liste de points P.
 	 */
-    Collection<PointTemoins> temoins;
+    private Collection<PointTemoins> temoins;
     
     /**
      * La liste de points W.
      */
-    ArrayList<PointTemoins> W;
+    private ArrayList<PointTemoins> W;
+    
+    public Collection<PointTemoins> getTemoins() {
+    	return this.temoins;
+    }
+    
+    public ArrayList<PointTemoins> getCloud() {
+    	return this.W;
+    }
     
     /**
      * Une simple construction.
@@ -56,28 +65,31 @@ public class CTemoins {
         PointTemoins point=(PointTemoins)p;
     	temoins.add(point);
         for (PointTemoins pTemoins:this.W) {
-        	if (pTemoins.first==null) {
-        		pTemoins.first=point;
-        		pTemoins.distanceToP=pTemoins.distanceTo(point);
+        	if (pTemoins.getFirstNearestPointToP()==null) {
+        		pTemoins.setFirstNearestPoint(point);
+        		pTemoins.setFirstDistanceToP(pTemoins.distanceTo(point));
         	}
         	else {
-        		if (pTemoins.second==null) {
-        			pTemoins.second=point;
-        			if (pTemoins.distanceTo(pTemoins.first)>pTemoins.distanceTo(pTemoins.second)) {
-        				PointTemoins temp=pTemoins.second;
-        				pTemoins.second=pTemoins.first;
-        				pTemoins.first=temp;
+        		if (pTemoins.getSecondNearestPointToP()==null) {
+        			pTemoins.setSecondNearestPoint(point);
+        			if (pTemoins.distanceTo(pTemoins.getFirstNearestPointToP())>pTemoins.distanceTo(pTemoins.getSecondNearestPointToP())) {
+        				PointTemoins temp=pTemoins.getSecondNearestPointToP();
+        				pTemoins.setSecondNearestPoint(pTemoins.getFirstNearestPointToP());
+        				pTemoins.setFirstNearestPoint(temp);
         			}
-        			pTemoins.distanceToP=pTemoins.distanceTo(pTemoins.first);
+        			pTemoins.setFirstDistanceToP(pTemoins.distanceTo(pTemoins.getFirstNearestPointToP()));
+        			pTemoins.setSecondDistanceToP(pTemoins.distanceTo(pTemoins.getSecondNearestPointToP()));
         		}
         		else {
-        			if (pTemoins.distanceTo(point)<pTemoins.distanceToP) {
-        				pTemoins.second=pTemoins.first;
-        				pTemoins.first=point;
-        				pTemoins.distanceToP=pTemoins.distanceTo(point);
+        			if (pTemoins.distanceTo(point)<pTemoins.getFirstDistanceToP()) {
+        				pTemoins.setSecondNearestPoint(pTemoins.getFirstNearestPointToP());
+        				pTemoins.setFirstNearestPoint(point);
+        				pTemoins.setSecondDistanceToP(pTemoins.getFirstDistanceToP());
+        				pTemoins.setFirstDistanceToP(pTemoins.distanceTo(point));
         			}
-        			else if (pTemoins.distanceTo(point)<pTemoins.distanceTo(pTemoins.second)) {
-        				pTemoins.second=point;
+        			else if (pTemoins.distanceTo(point)<pTemoins.getSecondDistanceToP()) {
+        				pTemoins.setSecondNearestPoint(point);
+        				pTemoins.setSecondDistanceToP(pTemoins.distanceTo(point));
         			}
         		}
         	}
@@ -95,10 +107,10 @@ public class CTemoins {
     		return;
     	}
     	insert(startingPoint);
-    	for (int i=1;i<nbDeTemoins;i++) {
+    	for (int i=2;i<=nbDeTemoins;i++) {
     		PointTemoins pointChoisi=null;
     		for (PointTemoins pointT:W) {
-    			if (pointChoisi==null || pointChoisi.distanceToP<pointT.distanceToP) pointChoisi=pointT;
+    			if (pointChoisi==null || pointChoisi.getFirstDistanceToP()<pointT.getFirstDistanceToP()) pointChoisi=pointT;
     		}
     		insert(pointChoisi);
     	}
