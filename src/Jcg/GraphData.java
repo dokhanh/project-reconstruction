@@ -85,14 +85,14 @@ public class GraphData extends JPanel {
             g2.draw(new Line2D.Double(x1, z1, x2, z2));
         }
         // Mark data points.
-        g2.setPaint(Color.red);
+        /*g2.setPaint(Color.red);
         for(int i = 0; i < data1.length; i++) {
             double x = PAD + i*xInc;
             double y = h - PAD - scale*data1[i];
             g2.fill(new Ellipse2D.Double(x-2, y-2, 4, 4));
             double z = h - PAD - scale*data2[i];
             g2.fill(new Ellipse2D.Double(x-2, z-2, 4, 4));
-        }
+        }*/
 	}
 	
 	private int getMax() {
