@@ -286,7 +286,7 @@ public class GraphOfTemoins {
      */
     public static void main (String[] args) {
     	GraphOfTemoins gtm=new GraphOfTemoins(args[0]);
-    	gtm.reconstructAndView(gtm.temoins.getCloud().get(0), 95);
-    	//gtm.reconstruction(gtm.temoins.getCloud().get(0), 20);
+    	//gtm.reconstructAndView(gtm.temoins.getCloud().get(0), 95);
+    	gtm.reconstruction(gtm.temoins.getCloud().get(0), 105);
     }
 }
