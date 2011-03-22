@@ -3,10 +3,7 @@ package complexTemoins;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import Jcg.GraphData;
 import Jcg.geometry.Point_2;
-import Jcg.triangulations2D.Delaunay_2;
-import Jcg.triangulations2D.TriangulationDSVertex_2;
 
 /**
  * Cette classe a pour but de représenter de manière mathématique et géométrique
@@ -18,19 +15,10 @@ import Jcg.triangulations2D.TriangulationDSVertex_2;
  */
 
 public class CTemoins {
-	/**
-	 * La liste de points P.
-	 */
-    private Collection<PointTemoins> temoins;
-    
     /**
      * La liste de points W.
      */
     private ArrayList<PointTemoins> W;
-    
-    public Collection<PointTemoins> getTemoins() {
-    	return this.temoins;
-    }
     
     public ArrayList<PointTemoins> getCloud() {
     	return this.W;
@@ -41,7 +29,6 @@ public class CTemoins {
      */
     public CTemoins() {
     	super();
-    	temoins=new ArrayList<PointTemoins>();
     	W=new ArrayList<PointTemoins>();
     }
     
@@ -51,7 +38,6 @@ public class CTemoins {
      */
     public CTemoins(Collection<PointTemoins> W) {
     	super();
-    	this.temoins=new ArrayList<PointTemoins>();
     	this.W=new ArrayList<PointTemoins>(W);
     }
     
@@ -63,7 +49,7 @@ public class CTemoins {
     public void insert(Point_2 p) {
     	if (!W.contains(p)) throw new Error("Le point "+p+" n'est pas contenu dans l'ensemble de points de depart");
         PointTemoins point=(PointTemoins)p;
-    	temoins.add(point);
+    	point.addToP();
         for (PointTemoins pTemoins:this.W) {
         	if (pTemoins.getFirstNearestPointToP()==null) {
         		pTemoins.setFirstNearestPoint(point);

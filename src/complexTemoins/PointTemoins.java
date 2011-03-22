@@ -30,6 +30,8 @@ public class PointTemoins extends Point_2 {
     private double secondDistanceToP;
     private int index;
     
+    private boolean added;
+    
     /**
      * Simple construction.
      */
@@ -39,6 +41,7 @@ public class PointTemoins extends Point_2 {
     	second=null;
     	distanceToP=-1;
     	this.index=index;
+    	this.added=false;
     }
     
     /**
@@ -51,6 +54,15 @@ public class PointTemoins extends Point_2 {
     	second=null;
     	distanceToP=-1;
     	this.index=index;
+    	this.added=false;
+    }
+    
+    public boolean added() {
+    	return this.added;
+    }
+    
+    public void addToP() {
+    	this.added=true;
     }
     
     /**

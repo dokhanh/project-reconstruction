@@ -244,33 +244,39 @@ public class GraphOfTemoins {
     	else {
     		LinkedList<Integer> nbOfComposants=new LinkedList<Integer>();
     		LinkedList<Integer> nbOfCycles=new LinkedList<Integer>();
+    		ArrayList<Double> abcis=new ArrayList<Double>();
     		this.temoins.insert(startingPoint);
     		for (int i=2;i<=nbDeTemoins;i++) {
+    			double temps=System.currentTimeMillis();
         		PointTemoins pointChoisi=null;
         		for (PointTemoins pointT:temoins.getCloud()) {
         			if (pointChoisi==null || pointChoisi.getFirstDistanceToP()<pointT.getFirstDistanceToP()) pointChoisi=pointT;
         		}
+        		abcis.add((Double)(1/pointChoisi.getFirstDistanceToP()));
         		temoins.insert(pointChoisi);
+        		temps=System.currentTimeMillis()-temps;
         		if (i==1) constructGraph();
         		else updateGraph();
         		draw();
         		int nbComposants=this.nbOfComposants();
         		int nbCycles=this.nbDeCycles();
-        		System.out.println(i+" "+nbComposants+" "+nbCycles);
+        		System.out.println(i+" "+nbComposants+" "+nbCycles+" in "+temps+" mls");
         		nbOfComposants.add(nbComposants);
         		nbOfCycles.add(nbCycles);
-        		GraphData.showData(nbOfComposants, nbOfCycles);
+        		GraphData.showData(nbOfComposants, nbOfCycles, abcis);
         	}
     	}
     }
     
     public void reconstruction (PointTemoins startingPoint, int nbDeTemoins) {
+    	double temps=System.currentTimeMillis();
     	temoins.reconstruction(startingPoint, nbDeTemoins);
+    	temps=System.currentTimeMillis()-temps;
     	constructGraph();
 		draw();
 		int nbComposants=this.nbOfComposants();
 		int nbCycles=this.nbDeCycles();
-		System.out.println(nbDeTemoins+" "+nbComposants+" "+nbCycles);
+		System.out.println(nbDeTemoins+" "+nbComposants+" "+nbCycles+" in "+temps+" mls");
     }
     
     /**
@@ -280,6 +286,7 @@ public class GraphOfTemoins {
      */
     public static void main (String[] args) {
     	GraphOfTemoins gtm=new GraphOfTemoins(args[0]);
-    	gtm.reconstructAndView(gtm.temoins.getCloud().get(0), 27);
+    	gtm.reconstructAndView(gtm.temoins.getCloud().get(0), 95);
+    	//gtm.reconstruction(gtm.temoins.getCloud().get(0), 20);
     }
 }

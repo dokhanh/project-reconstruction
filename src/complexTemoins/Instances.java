@@ -5,13 +5,11 @@ import java.awt.Container;
 import java.awt.Cursor;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Rectangle;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.geom.Ellipse2D;
 import java.awt.geom.Rectangle2D;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -19,16 +17,19 @@ import java.io.PrintWriter;
 import java.util.LinkedList;
 
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 public class Instances extends JFrame {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	DrawingCanvas canvas;
 	int nbOfPoints;
 	public String filename;
 	
 	public static int SIZE=600;
-	public static int SIZEOFREC=15;
+	public static int SIZEOFREC=20;
 	
 	public Instances(int nb, String name) {
 		super();
@@ -76,6 +77,10 @@ public class Instances extends JFrame {
 	}
 	
 	class DrawingCanvas extends JPanel {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
 		double x, y, w, h;
 	    int x1, y1, x2, y2;
 	    Rectangle2D rec;
@@ -123,13 +128,13 @@ public class Instances extends JFrame {
 	    	}
 	    	
 	    	public void mouseClicked(MouseEvent e) {
-	    		if (rec==null) {
+	    		//if (rec==null) {
 	    			x=e.getX();
 	    			y=e.getY();
 	    			x1=e.getX();
 	    			y1=e.getY();
 	    			rec=new Rectangle2D.Double(x, y, w, h);
-	    		}
+	    		//}
 		    	canvas.repaint();
 		    	//for test
 		    	//System.out.println("he");
