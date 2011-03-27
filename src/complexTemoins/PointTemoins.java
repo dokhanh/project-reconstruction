@@ -1,5 +1,7 @@
 package complexTemoins;
 
+import java.util.ArrayList;
+
 import Jcg.geometry.Point_2;
 import Jcg.geometry.Vector_2;
 
@@ -13,21 +15,12 @@ import Jcg.geometry.Vector_2;
  */
 
 public class PointTemoins extends Point_2 {
-	/**
-	 * Le premier point dans P le plus proche.
-	 */
-    private PointTemoins first;
-    
-    /**
-     * Le deuxième point dans P le plus proche (sauf first).
-     */
-    private PointTemoins second;
+	private ArrayList<PointTemoins> threeNearestPoints;
     
     /**
      * La distance à l'ensemble P.
      */
     private double distanceToP;
-    private double secondDistanceToP;
     private int index;
     
     private boolean added;
@@ -37,8 +30,7 @@ public class PointTemoins extends Point_2 {
      */
     public PointTemoins(int index) {
     	super();
-    	first=null;
-    	second=null;
+    	this.threeNearestPoints=new ArrayList<PointTemoins>();
     	distanceToP=-1;
     	this.index=index;
     	this.added=false;
@@ -50,11 +42,14 @@ public class PointTemoins extends Point_2 {
      */
     public PointTemoins (Point_2 p, int index) {
     	super(p);
-    	first=null;
-    	second=null;
+    	this.threeNearestPoints=new ArrayList<PointTemoins>();
     	distanceToP=-1;
     	this.index=index;
     	this.added=false;
+    }
+    
+    public ArrayList<PointTemoins> getThreeNearestPoints() {
+    	return this.threeNearestPoints;
     }
     
     public boolean added() {
@@ -75,36 +70,12 @@ public class PointTemoins extends Point_2 {
     	return Math.sqrt((Double)vector.squaredLength());
     }
     
-    public PointTemoins getFirstNearestPointToP() {
-    	return this.first;
-    }
-    
-    public PointTemoins getSecondNearestPointToP() {
-    	return this.second;
-    }
-    
     public double getFirstDistanceToP() {
     	return this.distanceToP;
     }
     
-    public double getSecondDistanceToP() {
-    	return this.secondDistanceToP;
-    }
-    
-    public void setFirstNearestPoint(PointTemoins p) {
-    	this.first=p;
-    }
-    
-    public void setSecondNearestPoint(PointTemoins p) {
-    	this.second=p;
-    }
-    
     public void setFirstDistanceToP(double d) {
     	this.distanceToP=d;
-    }
-    
-    public void setSecondDistanceToP(double d) {
-    	this.secondDistanceToP=d;
     }
     
     public int getIndex() {
