@@ -122,7 +122,7 @@ public class GraphData extends JPanel {
 		frame.getContentPane().removeAll();
         frame.add(gdata);
         frame.setSize(400,400);
-        frame.setLocation(700, 100);
+        frame.setLocation(600, 100);
         frame.setVisible(true);
 	}
 }
