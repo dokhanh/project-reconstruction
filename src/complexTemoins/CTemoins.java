@@ -2,8 +2,13 @@ package complexTemoins;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.LinkedList;
 
 import Jcg.geometry.Point_2;
+import Jcg.triangulations2D.Delaunay_2;
+import Jcg.triangulations2D.TriangulationDSFace_2;
+import Jcg.triangulations2D.TriangulationDSVertex_2;
 
 /**
  * Cette classe a pour but de représenter de manière mathématique et géométrique
@@ -14,11 +19,13 @@ import Jcg.geometry.Point_2;
  *
  */
 
-public class CTemoins {
+public class CTemoins extends Delaunay_2 {
     /**
      * La liste de points W.
      */
     private ArrayList<PointTemoins> W;
+    
+    HashMap<TriangulationDSVertex_2<Point_2>, ArrayList<PointTemoins>> pointsOfVoronoi;
     
     public ArrayList<PointTemoins> getCloud() {
     	return this.W;
@@ -30,6 +37,7 @@ public class CTemoins {
     public CTemoins() {
     	super();
     	W=new ArrayList<PointTemoins>();
+    	this.pointsOfVoronoi=new HashMap<TriangulationDSVertex_2<Point_2>, ArrayList<PointTemoins>>();
     }
     
     /**
@@ -39,6 +47,7 @@ public class CTemoins {
     public CTemoins(Collection<PointTemoins> W) {
     	super();
     	this.W=new ArrayList<PointTemoins>(W);
+    	this.pointsOfVoronoi=new HashMap<TriangulationDSVertex_2<Point_2>, ArrayList<PointTemoins>>();
     }
     
     /**
@@ -46,40 +55,134 @@ public class CTemoins {
      * s'inspire de la méthode de triangulation Delauney_2, mais en fait finalement
      * ça sert à rien.
      */
-    public void insert(Point_2 p) {
-    	if (!W.contains(p)) throw new Error("Le point "+p+" n'est pas contenu dans l'ensemble de points de depart");
-        PointTemoins point=(PointTemoins)p;
+    public void insertTemoins(PointTemoins point) {
+    	if (!W.contains(point)) throw new Error("Le point "+point+" n'est pas contenu dans l'ensemble de points de depart");
     	point.addToP();
+    	//for test
+    	//System.out.println(point.getIndex());
         for (PointTemoins pTemoins:this.W) {
-        	if (pTemoins.getFirstNearestPointToP()==null) {
-        		pTemoins.setFirstNearestPoint(point);
-        		pTemoins.setFirstDistanceToP(pTemoins.distanceTo(point));
+        	//for test
+        	//System.out.println(pTemoins.getThreeNearestPoints().size());
+        	if (pTemoins.getThreeNearestPoints().size()<3) {
+        		pTemoins.getThreeNearestPoints().add(point);
+        		if (pTemoins.getFirstDistanceToP()==-1 || pTemoins.getFirstDistanceToP()>pTemoins.distanceTo(point)) {
+        			pTemoins.setFirstDistanceToP(pTemoins.distanceTo(point));
+        		}
+        		//for test
+            	//if (pTemoins.getThreeNearestPoints().size()==2) System.out.println(pTemoins.getThreeNearestPoints().get(1).getIndex());
         	}
         	else {
-        		if (pTemoins.getSecondNearestPointToP()==null) {
-        			pTemoins.setSecondNearestPoint(point);
-        			if (pTemoins.distanceTo(pTemoins.getFirstNearestPointToP())>pTemoins.distanceTo(pTemoins.getSecondNearestPointToP())) {
-        				PointTemoins temp=pTemoins.getSecondNearestPointToP();
-        				pTemoins.setSecondNearestPoint(pTemoins.getFirstNearestPointToP());
-        				pTemoins.setFirstNearestPoint(temp);
+        		boolean cc=false;
+        		for (PointTemoins pt:pTemoins.getThreeNearestPoints()) {
+        			if (pTemoins.distanceTo(pt)>pTemoins.distanceTo(point)) {
+        				cc=true;
+        				break;
         			}
-        			pTemoins.setFirstDistanceToP(pTemoins.distanceTo(pTemoins.getFirstNearestPointToP()));
-        			pTemoins.setSecondDistanceToP(pTemoins.distanceTo(pTemoins.getSecondNearestPointToP()));
         		}
-        		else {
-        			if (pTemoins.distanceTo(point)<pTemoins.getFirstDistanceToP()) {
-        				pTemoins.setSecondNearestPoint(pTemoins.getFirstNearestPointToP());
-        				pTemoins.setFirstNearestPoint(point);
-        				pTemoins.setSecondDistanceToP(pTemoins.getFirstDistanceToP());
-        				pTemoins.setFirstDistanceToP(pTemoins.distanceTo(point));
+        		if (cc=true) {
+        			pTemoins.getThreeNearestPoints().add(point);
+        			if (pTemoins.getFirstDistanceToP()>pTemoins.distanceTo(point)) {
+            			pTemoins.setFirstDistanceToP(pTemoins.distanceTo(point));
+            		}
+        			PointTemoins pRemoved=null;
+        			for (PointTemoins pt: pTemoins.getThreeNearestPoints()) {
+        				if (pRemoved==null || pTemoins.distanceTo(pt)>pTemoins.distanceTo(pRemoved)) pRemoved=pt;
         			}
-        			else if (pTemoins.distanceTo(point)<pTemoins.getSecondDistanceToP()) {
-        				pTemoins.setSecondNearestPoint(point);
-        				pTemoins.setSecondDistanceToP(pTemoins.distanceTo(point));
-        			}
+        			pTemoins.getThreeNearestPoints().remove(pRemoved);
         		}
         	}
         }
+    }
+    
+    public void insertTemoinsAdvanced(PointTemoins point) {
+    	//for test
+    	//System.out.println("add "+point.getIndex()+" "+point.getFirstDistanceToP());
+    	if (!W.contains(point)) throw new Error("Le point "+point+" n'est pas contenu dans l'ensemble de points de depart");
+    	point.addToP();
+    	if (this.finiteVertices().size()==0) {
+    		this.pointsOfVoronoi.put(this.insert(point), new ArrayList<PointTemoins>(W));
+    		for (PointTemoins pt:W) {
+    			pt.getThreeNearestPoints().add(point);
+    			pt.setFirstDistanceToP(pt.distanceTo(point));
+    		}
+    		return;
+    	}
+    	ArrayList<PointTemoins> pointsToCheck=new ArrayList<PointTemoins>();
+    	ArrayList<PointTemoins> pointsToChange=new ArrayList<PointTemoins>();
+    	if (this.finiteVertices().size()<=2) {
+    		pointsToCheck=W;
+    		for (TriangulationDSVertex_2<Point_2> v:this.finiteVertices()) {
+    			ArrayList<PointTemoins> pointsToRemove=new ArrayList<PointTemoins>();
+				for (PointTemoins pt:this.pointsOfVoronoi.get(v)) {
+					if ((Double)v.getPoint().distanceFrom(pt)>point.distanceTo(pt)) {
+						pointsToRemove.add(pt);
+						pointsToChange.add(pt);
+					}
+				}
+				this.pointsOfVoronoi.get(v).removeAll(pointsToRemove);
+    		}
+    	}
+    	else {
+    		pointsToCheck.add(point);
+    		TriangulationDSFace_2<Point_2> vp=this.locate(point);
+    		if (vp==null) pointsToCheck=W;
+    		else {
+    			for (int i=0;i<vp.verticesPoints().length;i++) {
+    				if (this.finiteVertices().contains(vp.vertex(i))) {
+    					pointsToCheck.addAll(this.pointsOfVoronoi.get(vp.vertex(i)));
+    					ArrayList<PointTemoins> pointsToRemove=new ArrayList<PointTemoins>();
+    					for (PointTemoins pt:this.pointsOfVoronoi.get(vp.vertex(i))) {
+    						if ((Double)vp.vertex(i).getPoint().distanceFrom(pt)>point.distanceTo(pt)) {
+    							pointsToRemove.add(pt);
+    							pointsToChange.add(pt);
+    						}
+    					}
+    					this.pointsOfVoronoi.get(vp.vertex(i)).removeAll(pointsToRemove);
+    				}
+    			}
+    		}
+    	}
+    	for (PointTemoins pTemoins:pointsToCheck) {
+    		if (pTemoins.getThreeNearestPoints().size()<3) {
+        		pTemoins.getThreeNearestPoints().add(point);
+        		if (pTemoins.getFirstDistanceToP()==-1 || pTemoins.getFirstDistanceToP()>pTemoins.distanceTo(point)) {
+        			pTemoins.setFirstDistanceToP(pTemoins.distanceTo(point));
+        		}
+        		//for test
+            	//if (pTemoins.getThreeNearestPoints().size()==2) System.out.println(pTemoins.getThreeNearestPoints().get(1).getIndex());
+        	}
+        	else {
+        		boolean cc=false;
+        		for (PointTemoins pt:pTemoins.getThreeNearestPoints()) {
+        			if (pTemoins.distanceTo(pt)>pTemoins.distanceTo(point)) {
+        				cc=true;
+        				break;
+        			}
+        		}
+        		if (cc=true) {
+        			pTemoins.getThreeNearestPoints().add(point);
+        			if (pTemoins.getFirstDistanceToP()>pTemoins.distanceTo(point)) {
+            			pTemoins.setFirstDistanceToP(pTemoins.distanceTo(point));
+            		}
+        			PointTemoins pRemoved=null;
+        			for (PointTemoins pt: pTemoins.getThreeNearestPoints()) {
+        				if (pRemoved==null || pTemoins.distanceTo(pt)>pTemoins.distanceTo(pRemoved)) pRemoved=pt;
+        			}
+        			pTemoins.getThreeNearestPoints().remove(pRemoved);
+        		}
+        	}
+    	}
+    	this.pointsOfVoronoi.put(this.insert(point), pointsToChange);
+    }
+    
+    public static int nextIndex(int a) {
+    	if (a==2) return 0;
+    	else return a+1;
+    }
+    
+    public static int previousIndex(int a) {
+    	if (a==0) return 2;
+    	else return a-1;
     }
     
     /**
@@ -92,13 +195,29 @@ public class CTemoins {
     	if (nbDeTemoins<=1) {
     		return;
     	}
-    	insert(startingPoint);
+    	insertTemoins(startingPoint);
     	for (int i=2;i<=nbDeTemoins;i++) {
     		PointTemoins pointChoisi=null;
     		for (PointTemoins pointT:W) {
     			if (pointChoisi==null || pointChoisi.getFirstDistanceToP()<pointT.getFirstDistanceToP()) pointChoisi=pointT;
     		}
-    		insert(pointChoisi);
+    		
+    		insertTemoins(pointChoisi);
+    	}
+    	return;
+    }
+    
+    public void reconstructionAdvanced(PointTemoins startingPoint, int nbDeTemoins) {
+    	if (nbDeTemoins<=1) {
+    		return;
+    	}
+    	insertTemoinsAdvanced(startingPoint);
+    	for (int i=2;i<=nbDeTemoins;i++) {
+    		PointTemoins pointChoisi=null;
+    		for (PointTemoins pointT:W) {
+    			if (pointChoisi==null || pointChoisi.getFirstDistanceToP()<pointT.getFirstDistanceToP()) pointChoisi=pointT;
+    		}
+    		insertTemoinsAdvanced(pointChoisi);
     	}
     	return;
     }
