@@ -25,13 +25,13 @@ public class GraphOfTemoins {
 	/**
 	 * Contient W et P, pas plus.
 	 */
-    private CTemoins temoins;
+    CTemoins temoins;
     
     /**
      * La structure de graphe. Il faut quand même savoir enfin quels sont les points
      * qui sont reliés.
      */
-    private AdjacencyGraph graph;
+    AdjacencyGraph graph;
     
     /**
      * Construction, en sachant W et P.
@@ -44,7 +44,6 @@ public class GraphOfTemoins {
     		pointT.setIndex(nb);
     		nb+=1;
     	}
-    	graph=new AdjacencyGraph(nb);
     }
     
     /**
@@ -76,8 +75,6 @@ public class GraphOfTemoins {
     	int nb=0;
     	for (PointTemoins pointT:temoins.getCloud()) {
     		pointT.setIndex(nb);
-    		//for test
-    		//System.out.println(pointT.getIndex());
     		nb+=1;
     	}
     }
@@ -97,21 +94,6 @@ public class GraphOfTemoins {
      * c'est le moment où on doit construire la structure de graphe pour
      * l'affichage.
      */
-    public void constructGraph() {
-    	graph=new AdjacencyGraph(temoins.getCloud().size());
-    	for (PointTemoins pointT:temoins.getCloud()) {
-    		//for test
-    		//System.out.println("da");
-    		for (int i=0;i<pointT.getThreeNearestPoints().size()-1;i++) {
-    			graph.addEdge(pointT.getThreeNearestPoints().get(i).getIndex(), pointT.getThreeNearestPoints().get(i+1).getIndex());
-    			//for test
-    			//System.out.println(i);
-    		}
-    		if (pointT.getThreeNearestPoints().size()==3) {
-    			graph.addEdge(pointT.getThreeNearestPoints().get(0).getIndex(), pointT.getThreeNearestPoints().get(2).getIndex());
-    		}
-    	}
-    }
     
     /**
      * Calculer le nb de composantes connexes du graphe créé lors du fonctionnement de la
@@ -201,7 +183,7 @@ public class GraphOfTemoins {
     		}
     		voisins.put(cur, new LinkedList<Integer>());
     	}
-    	return nbDeCycles;
+    	return nbDeCycles-this.temoins.simplex.size();
     }
     
     /**
@@ -233,7 +215,7 @@ public class GraphOfTemoins {
      * Reconstruction pas à pas.
      * @param nbIterations Nombre d'itérations.
      */
-    public void reconstructAndView (PointTemoins startingPoint, int nbDeTemoins) {
+    public void reconstructAndView (PointTemoins startingPoint, int nbDeTemoins, int t) {
     	if (nbDeTemoins<=1) {
     		showPoints();
     	}
@@ -251,21 +233,26 @@ public class GraphOfTemoins {
         		abcis.add((Double)(1/pointChoisi.getFirstDistanceToP()));
         		temoins.insertTemoins(pointChoisi);
         		temps=System.currentTimeMillis()-temps;
-        		this.constructGraph();
+        		this.temoins.updateGraph(this);
         		draw();
         		int nbComposants=this.nbOfComposants();
         		int nbCycles=this.nbDeCycles();
         		System.out.println(i+" "+nbComposants+" "+nbCycles+" in "+temps+" mls");
+        		System.out.println(temoins.faces.size()+" aretes "+temoins.simplex.size()+" triangles");
+        		//for test
+        		//System.out.println("canh: "+temoins.faces.toString());
+        		//System.out.println("tam giac: "+temoins.simplex.toString());
+        		//System.out.println(" ");
         		nbOfComposants.add(nbComposants);
         		nbOfCycles.add(nbCycles);
         		GraphData.showData(nbOfComposants, nbOfCycles, abcis);
         		double temps1=System.currentTimeMillis();
-        		while (System.currentTimeMillis()-temps1<1000);
+        		while (System.currentTimeMillis()-temps1<t);
         	}
     	}
     }
     
-    public void reconstructAndViewAdvanced (PointTemoins startingPoint, int nbDeTemoins) {
+    public void reconstructAndViewAdvanced (PointTemoins startingPoint, int nbDeTemoins, int t) {
     	if (nbDeTemoins<=1) {
     		showPoints();
     	}
@@ -283,16 +270,21 @@ public class GraphOfTemoins {
         		abcis.add((Double)(1/pointChoisi.getFirstDistanceToP()));
         		temoins.insertTemoinsAdvanced(pointChoisi);
         		temps=System.currentTimeMillis()-temps;
-        		this.constructGraph();
+        		this.temoins.updateGraph(this);
         		draw();
         		int nbComposants=this.nbOfComposants();
         		int nbCycles=this.nbDeCycles();
         		System.out.println(i+" "+nbComposants+" "+nbCycles+" in "+temps+" mls");
+        		System.out.println(temoins.faces.size()+" aretes "+temoins.simplex.size()+" triangles");
+        		//for test
+        		//System.out.println("canh: "+temoins.faces.toString());
+        		//System.out.println("tam giac: "+temoins.simplex.toString());
+        		//System.out.println(" ");
         		nbOfComposants.add(nbComposants);
         		nbOfCycles.add(nbCycles);
         		GraphData.showData(nbOfComposants, nbOfCycles, abcis);
         		double temps1=System.currentTimeMillis();
-        		while (System.currentTimeMillis()-temps1<1000);
+        		while (System.currentTimeMillis()-temps1<t);
         	}
     	}
     }
@@ -301,22 +293,24 @@ public class GraphOfTemoins {
     	double temps=System.currentTimeMillis();
     	temoins.reconstruction(startingPoint, nbDeTemoins);
     	temps=System.currentTimeMillis()-temps;
-    	constructGraph();
+    	this.temoins.updateGraph(this);
 		draw();
 		int nbComposants=this.nbOfComposants();
 		int nbCycles=this.nbDeCycles();
 		System.out.println(nbDeTemoins+" "+nbComposants+" "+nbCycles+" in "+temps+" mls");
+		System.out.println(temoins.faces.size()+" aretes "+temoins.simplex.size()+" triangles");
     }
     
     public void reconstructionAdvanced (PointTemoins startingPoint, int nbDeTemoins) {
     	double temps=System.currentTimeMillis();
     	temoins.reconstructionAdvanced(startingPoint, nbDeTemoins);
     	temps=System.currentTimeMillis()-temps;
-    	constructGraph();
+    	this.temoins.updateGraph(this);
 		draw();
 		int nbComposants=this.nbOfComposants();
 		int nbCycles=this.nbDeCycles();
 		System.out.println(nbDeTemoins+" "+nbComposants+" "+nbCycles+" in "+temps+" mls");
+		System.out.println(temoins.faces.size()+" aretes "+temoins.simplex.size()+" triangles");
     }
     
     /**
@@ -326,7 +320,7 @@ public class GraphOfTemoins {
      */
     public static void main (String[] args) {
     	GraphOfTemoins gtm=new GraphOfTemoins(args[0]);
-    	//gtm.reconstructAndViewAdvanced(gtm.temoins.getCloud().get(0), 150);
-    	gtm.reconstructionAdvanced(gtm.temoins.getCloud().get(0), 160);
+    	gtm.reconstructAndViewAdvanced(gtm.temoins.getCloud().get(0), 200, 1000);
+    	//gtm.reconstruction(gtm.temoins.getCloud().get(0), 400);
     }
 }
