@@ -3,8 +3,6 @@ package complexTemoins;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import Jcg.graph.AdjacencyGraph;
-
 public class SimplexFace {
     ArrayList<PointTemoins> listPoints;
     
