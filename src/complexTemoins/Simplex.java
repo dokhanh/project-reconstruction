@@ -3,8 +3,6 @@ package complexTemoins;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import Jcg.graph.AdjacencyGraph;
-
 public class Simplex {
 ArrayList<PointTemoins> listPoints;
     
@@ -68,8 +66,6 @@ ArrayList<PointTemoins> listPoints;
     
     public void constructGraph (GraphOfTemoins gtm) {
     	if (gtm.temoins.simplex.contains(this)==false && this.listPoints.size()==3) {
-    		//for test
-    		//System.out.println("da");
     		gtm.temoins.simplex.add(this);
     	}
     }
