@@ -117,14 +117,10 @@ public class Instances extends JFrame {
 	    	        x1 = e.getX();
 	    	        y1 = e.getY();
 	    		}
-	    		//for test
-		    	//System.out.println("he");
 	    	}
 	    	
 	    	public void mouseReleased(MouseEvent e) {
 	    		canvas.repaint();
-	    		//for test
-	    		//System.out.println(listOfRec);
 	    	}
 	    	
 	    	public void mouseClicked(MouseEvent e) {
@@ -136,8 +132,6 @@ public class Instances extends JFrame {
 	    			rec=new Rectangle2D.Double(x, y, w, h);
 	    		//}
 		    	canvas.repaint();
-		    	//for test
-		    	//System.out.println("he");
 		    }
 	    }
 	    
@@ -149,8 +143,6 @@ public class Instances extends JFrame {
 	    			x1=e.getX();
 	    			y1=e.getY();
 	    			rec=new Rectangle2D.Double(x, y, w, h);
-	    			//for test
-	    			//System.out.println("h");
 	    		}
 				else {
 					if (rec.contains(e.getX(), e.getY())) {
@@ -162,8 +154,6 @@ public class Instances extends JFrame {
 						y1 = y2;
 					}
 				}
-				//for test
-				//System.out.println("he");
 				listOfRec.add(new Rectangle2D.Double(x, y, w, h));
 				canvas.repaint();
 			}
@@ -176,8 +166,6 @@ public class Instances extends JFrame {
 			            curCursor = Cursor.getDefaultCursor();
 			        }
 				}
-				//for test
-		    	//System.out.println("he");
 				canvas.repaint();
 			}
 		}
