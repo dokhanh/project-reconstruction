@@ -148,15 +148,11 @@ public class GraphOfTemoins {
     public int nbDeCycles() {
     	LinkedList<Integer> pointsPasser=new LinkedList<Integer>();
     	HashMap<Integer, LinkedList<Integer>> voisins=new HashMap<Integer, LinkedList<Integer>>();
-    	//for test
-    	//System.out.println(graph.sizeVertices());
     	for (int i=0;i<graph.sizeVertices();i++) {
     		voisins.put(i, new LinkedList<Integer>());
     		pointsPasser.add(i);
     	}
     	int[][] edges=graph.getEdges();
-    	//for test
-    	//System.out.println(edges.length);
     	for (int i=0;i<edges.length;i++) {
     		voisins.get(edges[i][0]).add(edges[i][1]);
     		voisins.get(edges[i][1]).add(edges[i][0]);
@@ -239,10 +235,6 @@ public class GraphOfTemoins {
         		int nbCycles=this.nbDeCycles();
         		System.out.println(i+" "+nbComposants+" "+nbCycles+" in "+temps+" mls");
         		System.out.println(temoins.faces.size()+" aretes "+temoins.simplex.size()+" triangles");
-        		//for test
-        		//System.out.println("canh: "+temoins.faces.toString());
-        		//System.out.println("tam giac: "+temoins.simplex.toString());
-        		//System.out.println(" ");
         		nbOfComposants.add(nbComposants);
         		nbOfCycles.add(nbCycles);
         		GraphData.showData(nbOfComposants, nbOfCycles, abcis);
@@ -276,10 +268,6 @@ public class GraphOfTemoins {
         		int nbCycles=this.nbDeCycles();
         		System.out.println(i+" "+nbComposants+" "+nbCycles+" in "+temps+" mls");
         		System.out.println(temoins.faces.size()+" aretes "+temoins.simplex.size()+" triangles");
-        		//for test
-        		//System.out.println("canh: "+temoins.faces.toString());
-        		//System.out.println("tam giac: "+temoins.simplex.toString());
-        		//System.out.println(" ");
         		nbOfComposants.add(nbComposants);
         		nbOfCycles.add(nbCycles);
         		GraphData.showData(nbOfComposants, nbOfCycles, abcis);
