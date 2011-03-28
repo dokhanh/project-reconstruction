@@ -3,7 +3,6 @@ package complexTemoins;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.LinkedList;
 
 import Jcg.geometry.Point_2;
 import Jcg.graph.AdjacencyGraph;
@@ -67,7 +66,6 @@ public class CTemoins extends Delaunay_2 {
      * ça sert à rien.
      */
     public void insertTemoins(PointTemoins point) {
-    	System.out.println("add "+point.getIndex()+" "+point.getFirstDistanceToP());
     	if (!W.contains(point)) throw new Error("Le point "+point+" n'est pas contenu dans l'ensemble de points de depart");
     	point.addToP();
         for (PointTemoins pTemoins:this.W) {
@@ -76,7 +74,6 @@ public class CTemoins extends Delaunay_2 {
     }
     
     public void insertTemoinsAdvanced(PointTemoins point) {
-    	System.out.println("add "+point.getIndex()+" "+point.getFirstDistanceToP());
     	if (!W.contains(point)) throw new Error("Le point "+point+" n'est pas contenu dans l'ensemble de points de depart");
     	point.addToP();
     	TriangulationDSVertex_2<Point_2> vAdded=this.insert(point);
