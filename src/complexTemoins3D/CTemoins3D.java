@@ -141,7 +141,7 @@ public class CTemoins3D extends Delaunay_3 {
     		}
     	}
     	for (PointTemoins3D pTemoins:pointsToCheck) {
-    		if (pTemoins.getFourNearestPoints().size()<3) {
+    		if (pTemoins.getFourNearestPoints().size()<4) {
         		pTemoins.getFourNearestPoints().add(point);
         		if (pTemoins.getFirstDistanceToP()==-1 || pTemoins.getFirstDistanceToP()>pTemoins.distanceTo(point)) {
         			pTemoins.setFirstDistanceToP(pTemoins.distanceTo(point));

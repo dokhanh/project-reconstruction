@@ -88,7 +88,7 @@ public class GraphOfTemoins3D {
     	for (PointTemoins3D pointT:temoins.getCloud()) {
     		pointT.setIndex(nb);
     		//for test
-    		System.out.println(pointT.getIndex());
+    		//System.out.println(pointT.getIndex());
     		nb+=1;
     	}
     }
@@ -131,8 +131,9 @@ public class GraphOfTemoins3D {
     		//for test
     		//System.out.println("da");
     		ArrayList<PointTemoins3D> tempL = pointT.getFourNearestPoints();
-    		for (int i=0;i<pointT.getFourNearestPoints().size();i++) {
-    			tempT = new Triangle_3(tempL.get(i%4),tempL.get((i+1)%4),tempL.get((i+2)%4));
+    		System.out.println(tempL.size());
+    		for (int i=0;i<tempL.size();i++) {
+    			tempT = new Triangle_3(tempL.get(i%tempL.size()),tempL.get((i+1)%tempL.size()),tempL.get((i+2)%tempL.size()));
     			//for test
     			//System.out.println(i);
     			listT.add(tempT);
@@ -257,10 +258,20 @@ public class GraphOfTemoins3D {
     	
     	TransformGroup objTrans = new TransformGroup();
     	Appearance ap = new Appearance();
-    	Color color = new Color(0);
+    	Color[] color = new Color[listT.size()];
+    	for(int i=0; i<listT.size(); i++) {
+    		color[i] = Color.blue;
+    	}
+    	
     	MeshRepresentation mp = new MeshRepresentation();
     	mp.getFromTriangleSoup(listT);
-    	MeshViewer mesh = new MeshViewer(listP);
+    	new MeshViewer(mp);
+    	/*
+    	MeshViewer mesh = new MeshViewer();
+    	mesh.addTriangles(objTrans, ap, listT, color);
+    	mesh.repaint();
+    	*/
+    	
     }
     
     /**
@@ -361,8 +372,12 @@ public class GraphOfTemoins3D {
 		System.out.println(nbDeTemoins+" "+nbComposants+" "+nbCycles+" in "+temps+" mls");
     }
     
-    public void reconstruction3D(PointTemoins3D startingPoint) {
-    	
+    public void reconstruction3D(PointTemoins3D startingPoint, int nbDeTemoins) {
+    	double temps=System.currentTimeMillis();
+    	temoins.reconstructionAdvanced(startingPoint, nbDeTemoins);
+    	temps=System.currentTimeMillis()-temps;
+    	constructListOfTriangles();
+    	draw3();
     }
     
     /**
@@ -374,7 +389,7 @@ public class GraphOfTemoins3D {
     	GraphOfTemoins3D gtm=new GraphOfTemoins3D(args[0]);
     	//gtm.reconstructAndViewAdvanced(gtm.temoins.getCloud().get(0), 150);
     	//gtm.reconstructionAdvanced(gtm.temoins.getCloud().get(0), 160);
-    	gtm.constructListOfTriangles();
-    	gtm.draw3();
+    	gtm.reconstruction3D(gtm.temoins.getCloud().get(0), 160);
+    	System.out.println(gtm.listT.size());
     }
 }
