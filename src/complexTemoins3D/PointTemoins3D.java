@@ -1,6 +1,11 @@
 package complexTemoins3D;
 
+import java.util.ArrayList;
+
+import complexTemoins.PointTemoins;
+
 import Jcg.geometry.Point_3;
+import Jcg.geometry.Vector_3;
 
 /**
  * Paraille que le cas 2D
@@ -9,27 +14,12 @@ import Jcg.geometry.Point_3;
  */
 
 public class PointTemoins3D extends Point_3 {
-	/**
-	 * Le premier point dans P le plus proche.
-	 */
-	public PointTemoins3D first;
-	
-	/**
-	 * La seconde point dans P le plus proche.
-	 */
-	public PointTemoins3D second;
-	
-	/**
-	 * La troisieme point dans P le plus proche.
-	 */
-	public PointTemoins3D third;
+	private ArrayList<PointTemoins3D> fourNearestPoints;
 	
 	/**
 	 * La distance a l'ensemble P.
 	 */
 	double distanceToP;
-	double secondDistanceToP;
-	double thirdDistanceToP;
 	
 	private int index;
 	
@@ -40,12 +30,8 @@ public class PointTemoins3D extends Point_3 {
 	 */
 	public PointTemoins3D(int index) {
 		super();
-		first = null;
-		second = null;
-		third = null;
+    	this.fourNearestPoints=new ArrayList<PointTemoins3D>();
 		distanceToP = -1;
-		secondDistanceToP = -1;
-		thirdDistanceToP = -1;
 		this.index = index;
 		this.added = false;
 	}
@@ -56,15 +42,15 @@ public class PointTemoins3D extends Point_3 {
 	 */
 	public PointTemoins3D(Point_3 p, int index) {
 		super(p);
-		first = null;
-		second = null;
-		third = null;
+    	this.fourNearestPoints=new ArrayList<PointTemoins3D>();
 		distanceToP = -1;
-		secondDistanceToP = -1;
-		thirdDistanceToP = -1;
 		this.index = index;
 		this.added = false;
 	}
+	
+	public ArrayList<PointTemoins3D> getFourNearestPoints() {
+    	return this.fourNearestPoints;
+    }
 	
 	public boolean added() {
 		return this.added;
@@ -79,40 +65,17 @@ public class PointTemoins3D extends Point_3 {
 	 * @param q Point auquele on veut calculer la distance.
 	 * @return Distance en double entre le point au courant et q.
 	 */
-	public double distanceTo(PointTemoins3D q) {
-		return this.distanceFrom(q).doubleValue();
-	}
+	public double distanceTo (PointTemoins3D q) {
+    	Vector_3 vector=new Vector_3(this, q);
+    	return Math.sqrt((Double)vector.squaredLength());
+    }
 	
-	public PointTemoins3D getFirstNearestPointToP() {
-    	return this.first;
-    }
-    
-    public PointTemoins3D getSecondNearestPointToP() {
-    	return this.second;
-    }
-    
-    public double getFirstDistanceToP() {
+	public double getFirstDistanceToP() {
     	return this.distanceToP;
-    }
-    
-    public double getSecondDistanceToP() {
-    	return this.secondDistanceToP;
-    }
-    
-    public void setFirstNearestPoint(PointTemoins3D p) {
-    	this.first=p;
-    }
-    
-    public void setSecondNearestPoint(PointTemoins3D p) {
-    	this.second=p;
     }
     
     public void setFirstDistanceToP(double d) {
     	this.distanceToP=d;
-    }
-    
-    public void setSecondDistanceToP(double d) {
-    	this.secondDistanceToP=d;
     }
     
     public int getIndex() {

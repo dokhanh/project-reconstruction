@@ -25,14 +25,14 @@ public class GraphOfTemoins3D {
 	/**
 	 * Contient W et P, pas plus.
 	 */
-    CTemoins3D temoins;
+    private CTemoins3D temoins;
     
     /**
      * La structure de graphe. Il faut quand même savoir enfin quels sont les points
      * qui sont reliés.
      */
-    AdjacencyGraph graph;
-
+    private AdjacencyGraph graph;
+    
     /**
      * Construction, en sachant W et P.
      * @param temoins
@@ -40,7 +40,7 @@ public class GraphOfTemoins3D {
     public GraphOfTemoins3D(CTemoins3D temoins) {
     	this.temoins=temoins;
     	int nb=0;
-    	for (PointTemoins3D pointT:temoins.W) {
+    	for (PointTemoins3D pointT:temoins.getCloud()) {
     		pointT.setIndex(nb);
     		nb+=1;
     	}
@@ -67,19 +67,20 @@ public class GraphOfTemoins3D {
     			double x=Double.parseDouble(mots[0]);
     			double y=Double.parseDouble(mots[1]);
     			double z=Double.parseDouble(mots[2]);
-    			PointTemoins3D point=new PointTemoins3D(new Point_3(x,y,z),0);
-    			this.temoins.W.add(point);
+    			PointTemoins3D point=new PointTemoins3D(new Point_3(x,y,z), 0);
+    			this.temoins.getCloud().add(point);
     		}
     		br.close();
     	} catch (IOException e) {
     		e.printStackTrace();
     	}
     	int nb=0;
-    	for (PointTemoins3D pointT:temoins.W) {
+    	for (PointTemoins3D pointT:temoins.getCloud()) {
     		pointT.setIndex(nb);
+    		//for test
+    		//System.out.println(pointT.getIndex());
     		nb+=1;
     	}
-    	graph=new AdjacencyGraph(nb);
     }
     
     /**
@@ -98,26 +99,18 @@ public class GraphOfTemoins3D {
      * l'affichage.
      */
     public void constructGraph() {
-    	for (PointTemoins3D pointT:temoins.getCloud3D()) {
-    		if (pointT.getFirstNearestPointToP()!=null && pointT.getSecondNearestPointToP()!=null) {
-    			graph.addEdge(pointT.getFirstNearestPointToP().getIndex(), pointT.getSecondNearestPointToP().getIndex());
+    	graph=new AdjacencyGraph(temoins.getCloud().size());
+    	for (PointTemoins3D pointT:temoins.getCloud()) {
+    		//for test
+    		//System.out.println("da");
+    		for (int i=0;i<pointT.getFourNearestPoints().size()-1;i++) {
+    			graph.addEdge(pointT.getFourNearestPoints().get(i).getIndex(), pointT.getFourNearestPoints().get(i+1).getIndex());
+    			//for test
+    			//System.out.println(i);
     		}
-    	}
-    }
-    
-    /**
-     * Similaire à la méthode constructGraph, mais plus léger, car on n'a pas besoin
-     * de rajouter les sommets.
-     */
-    public void updateGraph() {
-    	int nb=graph.sizeVertices();
-    	for (int i=0;i<nb;i++) {
-    		for (int j=0;j<nb;j++) {
-    			if (graph.adjacent(i, j)) graph.removeEdge(i, j);
+    		if (pointT.getFourNearestPoints().size()==4) {
+    			graph.addEdge(pointT.getFourNearestPoints().get(0).getIndex(), pointT.getFourNearestPoints().get(2).getIndex());
     		}
-    	}
-    	for (PointTemoins3D pointT:temoins.getCloud3D()) {
-    		graph.addEdge(pointT.getFirstNearestPointToP().getIndex(), pointT.getSecondNearestPointToP().getIndex());
     	}
     }
     
@@ -174,11 +167,15 @@ public class GraphOfTemoins3D {
     public int nbDeCycles() {
     	LinkedList<Integer> pointsPasser=new LinkedList<Integer>();
     	HashMap<Integer, LinkedList<Integer>> voisins=new HashMap<Integer, LinkedList<Integer>>();
+    	//for test
+    	//System.out.println(graph.sizeVertices());
     	for (int i=0;i<graph.sizeVertices();i++) {
     		voisins.put(i, new LinkedList<Integer>());
     		pointsPasser.add(i);
     	}
     	int[][] edges=graph.getEdges();
+    	//for test
+    	//System.out.println(edges.length);
     	for (int i=0;i<edges.length;i++) {
     		voisins.get(edges[i][0]).add(edges[i][1]);
     		voisins.get(edges[i][1]).add(edges[i][0]);
@@ -213,50 +210,90 @@ public class GraphOfTemoins3D {
      * afin de pouvoir bien afficher, il faut d'abord ajouter en ordre les sommets du graphe
      * au SpectralDrawing_2. C'est essentiel.
      */
+    /*
     public void draw() {
-    	SpectralDrawing_3<PointTemoins3D> spd=new SpectralDrawing_3<PointTemoins3D>(this.graph);
-    	spd.points=new ArrayList<PointTemoins3D>();
-    	PointTemoins3D[] arrayP=new PointTemoins3D[graph.sizeVertices()];
-    	for (PointTemoins3D point:temoins.getCloud3D()) {
+    	SpectralDrawing_2<PointTemoins> spd=new SpectralDrawing_2<PointTemoins>(this.graph);
+    	spd.points=new ArrayList<PointTemoins>();
+    	PointTemoins[] arrayP=new PointTemoins[graph.sizeVertices()];
+    	for (PointTemoins point:temoins.getCloud()) {
     		arrayP[point.getIndex()]=point;
     	}
     	for (int i=0;i<graph.sizeVertices();i++) spd.points.add(arrayP[i]);
-    	spd.computeDrawing();
-    	spd.draw3D();
+    	spd.draw2D();
+    }
+    */
+    /**
+     * Pour afficher tous les points donnés sans arête entre eux, mais la méthode
+     * n'est pas encore complète.
+     */
+    public void showPoints() {
+    	
     }
     
     /**
      * Reconstruction pas à pas.
      * @param nbIterations Nombre d'itérations.
      */
-    public void reconstructAndView (int nbIterations) {
-    	if (nbIterations<=1) {
-    		//showPoints();
+    public void reconstructAndView (PointTemoins3D startingPoint, int nbDeTemoins) {
+    	if (nbDeTemoins<=1) {
+    		showPoints();
     	}
     	else {
-    		//LinkedList<Integer> nbOfComposants=new LinkedList<Integer>();
-    		//LinkedList<Integer> nbOfCycles=new LinkedList<Integer>();
-    		temoins.reconstruction(temoins.W.get(0), 2);
-    		constructGraph();
-    		draw();
-    		//for test
-    		//int nbComposants=this.nbOfComposants();
-    		//int nbCycles=this.nbDeCycles();
-    		//System.out.println(2+" "+nbComposants+" "+nbCycles);
-    		//nbOfComposants.add(nbComposants);
-    		//nbOfCycles.add(nbCycles);
-    		//GraphData.showData(nbOfComposants, nbOfCycles);
-    		for (int i=3;i<=nbIterations;i++) {
-        		temoins.reconstruction(temoins.W.get(0), i);
-        		updateGraph();
-        		draw();
-        		//for test
-        		//nbComposants=this.nbOfComposants();
-        		//nbCycles=this.nbDeCycles();
-        		//System.out.println(i+" "+nbComposants+" "+nbCycles);
-        		//nbOfComposants.add(nbComposants);
-        		//nbOfCycles.add(nbCycles);
-        		//GraphData.showData(nbOfComposants, nbOfCycles);
+    		LinkedList<Integer> nbOfComposants=new LinkedList<Integer>();
+    		LinkedList<Integer> nbOfCycles=new LinkedList<Integer>();
+    		ArrayList<Double> abcis=new ArrayList<Double>();
+    		this.temoins.insertTemoins(startingPoint);
+    		for (int i=2;i<=nbDeTemoins;i++) {
+    			double temps=System.currentTimeMillis();
+        		PointTemoins3D pointChoisi=null;
+        		for (PointTemoins3D pointT:temoins.getCloud()) {
+        			if (pointChoisi==null || pointChoisi.getFirstDistanceToP()<pointT.getFirstDistanceToP()) pointChoisi=pointT;
+        		}
+        		abcis.add((Double)(1/pointChoisi.getFirstDistanceToP()));
+        		temoins.insertTemoins(pointChoisi);
+        		temps=System.currentTimeMillis()-temps;
+        		this.constructGraph();
+        		//draw();
+        		int nbComposants=this.nbOfComposants();
+        		int nbCycles=this.nbDeCycles();
+        		System.out.println(i+" "+nbComposants+" "+nbCycles+" in "+temps+" mls");
+        		nbOfComposants.add(nbComposants);
+        		nbOfCycles.add(nbCycles);
+        		GraphData.showData(nbOfComposants, nbOfCycles, abcis);
+        		double temps1=System.currentTimeMillis();
+        		while (System.currentTimeMillis()-temps1<1000);
+        	}
+    	}
+    }
+    
+    public void reconstructAndViewAdvanced (PointTemoins3D startingPoint, int nbDeTemoins) {
+    	if (nbDeTemoins<=1) {
+    		showPoints();
+    	}
+    	else {
+    		LinkedList<Integer> nbOfComposants=new LinkedList<Integer>();
+    		LinkedList<Integer> nbOfCycles=new LinkedList<Integer>();
+    		ArrayList<Double> abcis=new ArrayList<Double>();
+    		this.temoins.insertTemoinsAdvanced(startingPoint);
+    		for (int i=2;i<=nbDeTemoins;i++) {
+    			double temps=System.currentTimeMillis();
+        		PointTemoins3D pointChoisi=null;
+        		for (PointTemoins3D pointT:temoins.getCloud()) {
+        			if (pointChoisi==null || pointChoisi.getFirstDistanceToP()<pointT.getFirstDistanceToP()) pointChoisi=pointT;
+        		}
+        		abcis.add((Double)(1/pointChoisi.getFirstDistanceToP()));
+        		temoins.insertTemoinsAdvanced(pointChoisi);
+        		temps=System.currentTimeMillis()-temps;
+        		this.constructGraph();
+        		//draw();
+        		int nbComposants=this.nbOfComposants();
+        		int nbCycles=this.nbDeCycles();
+        		System.out.println(i+" "+nbComposants+" "+nbCycles+" in "+temps+" mls");
+        		nbOfComposants.add(nbComposants);
+        		nbOfCycles.add(nbCycles);
+        		GraphData.showData(nbOfComposants, nbOfCycles, abcis);
+        		double temps1=System.currentTimeMillis();
+        		while (System.currentTimeMillis()-temps1<1000);
         	}
     	}
     }
@@ -266,7 +303,18 @@ public class GraphOfTemoins3D {
     	temoins.reconstruction(startingPoint, nbDeTemoins);
     	temps=System.currentTimeMillis()-temps;
     	constructGraph();
-		draw();
+		//draw();
+		int nbComposants=this.nbOfComposants();
+		int nbCycles=this.nbDeCycles();
+		System.out.println(nbDeTemoins+" "+nbComposants+" "+nbCycles+" in "+temps+" mls");
+    }
+    
+    public void reconstructionAdvanced (PointTemoins3D startingPoint, int nbDeTemoins) {
+    	double temps=System.currentTimeMillis();
+    	temoins.reconstructionAdvanced(startingPoint, nbDeTemoins);
+    	temps=System.currentTimeMillis()-temps;
+    	constructGraph();
+		//draw();
 		int nbComposants=this.nbOfComposants();
 		int nbCycles=this.nbDeCycles();
 		System.out.println(nbDeTemoins+" "+nbComposants+" "+nbCycles+" in "+temps+" mls");
@@ -279,7 +327,7 @@ public class GraphOfTemoins3D {
      */
     public static void main (String[] args) {
     	GraphOfTemoins3D gtm=new GraphOfTemoins3D(args[0]);
-    	gtm.reconstructAndView(8);
-    	gtm.reconstruction(gtm.temoins.getCloud3D().get(0), 105);
+    	//gtm.reconstructAndViewAdvanced(gtm.temoins.getCloud().get(0), 150);
+    	gtm.reconstructionAdvanced(gtm.temoins.getCloud().get(0), 160);
     }
 }
