@@ -15,7 +15,11 @@ import Jcg.geometry.Vector_2;
  */
 
 public class PointTemoins extends Point_2 {
-	private ArrayList<PointTemoins> threeNearestPoints;
+	Simplex simplex;
+	
+	SimplexFace face;
+	
+	PointTemoins nearestPoint;
     
     /**
      * La distance à l'ensemble P.
@@ -30,7 +34,9 @@ public class PointTemoins extends Point_2 {
      */
     public PointTemoins(int index) {
     	super();
-    	this.threeNearestPoints=new ArrayList<PointTemoins>();
+    	this.simplex=new Simplex();
+    	this.face=new SimplexFace();
+    	this.nearestPoint=null;
     	distanceToP=-1;
     	this.index=index;
     	this.added=false;
@@ -42,14 +48,12 @@ public class PointTemoins extends Point_2 {
      */
     public PointTemoins (Point_2 p, int index) {
     	super(p);
-    	this.threeNearestPoints=new ArrayList<PointTemoins>();
+     	this.simplex=new Simplex();
+    	this.face=new SimplexFace();
+    	this.nearestPoint=null;
     	distanceToP=-1;
     	this.index=index;
     	this.added=false;
-    }
-    
-    public ArrayList<PointTemoins> getThreeNearestPoints() {
-    	return this.threeNearestPoints;
     }
     
     public boolean added() {
@@ -84,5 +88,11 @@ public class PointTemoins extends Point_2 {
     
     public void setIndex(int in) {
     	this.index=in;
+    }
+    
+    public void insert(PointTemoins point) {
+    	this.simplex.insert(point, this);
+    	this.face.insert(point, this);
+    	this.distanceToP=this.distanceTo(this.nearestPoint);
     }
 }
