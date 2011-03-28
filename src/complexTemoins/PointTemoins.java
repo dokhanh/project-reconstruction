@@ -12,20 +12,33 @@ import Jcg.geometry.Vector_2;
 
 public class PointTemoins extends Point_2 {
 	/**
-	 * 
+	 * Le simplexe dont le point this est un témoins.
 	 */
 	Simplex simplex;
 	
+	/**
+	 * La face dont le point this est un témoins.
+	 */
 	SimplexFace face;
 	
+	/**
+	 * Le point dans P le plus proche par rapport au point this.
+	 */
 	PointTemoins nearestPoint;
     
     /**
      * La distance à l'ensemble P.
      */
     private double distanceToP;
+    
+    /**
+     * Index du point.
+     */
     private int index;
     
+    /**
+     * La variable booléenne indiquant si le point est déjà dans P ou non.
+     */
     private boolean added;
     
     /**
