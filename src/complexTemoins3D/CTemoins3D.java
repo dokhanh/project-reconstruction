@@ -13,7 +13,7 @@ import Jcg.triangulations3D.TriangulationDSVertex_3;
  * l'algorithme de complexe de témoins. Il n'y a donc aucune méthode qui sert à
  * l'affichage dans cette classe. Pour l'affichage, voir plutôt la classe
  * GraphOfTemoins.
- * @author Khanh & Jinye
+ * @author Khanh & Jinze
  *
  */
 

@@ -26,7 +26,7 @@ import Jcg.viewer.MeshViewer;
 
 /**
  * Cette classe est pour effectuer la reconstruction et l'affichage de résultats.
- * @author Khanh & Jinye
+ * @author Khanh & Jinze
  *
  */
 

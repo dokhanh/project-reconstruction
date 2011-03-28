@@ -9,7 +9,7 @@ import Jcg.geometry.Vector_3;
 
 /**
  * Paraille que le cas 2D
- * @author Jinze
+ * @author Khanh & Jinze
  *
  */
 
