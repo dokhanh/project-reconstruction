@@ -6,14 +6,23 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 
-import Jcg.Fenetre;
+import javax.media.j3d.TransformGroup;
+import javax.media.j3d.Appearance;
+import java.awt.Color;
+
+import complexTemoins.PointTemoins;
+
 import Jcg.GraphData;
 import Jcg.geometry.Point_3;
+import Jcg.geometry.Triangle_3;
 import Jcg.graph.AdjacencyGraph;
 import Jcg.graphDrawing.SpectralDrawing_3;
+import Jcg.polyhedron.MeshRepresentation;
+import Jcg.viewer.MeshViewer;
 
 /**
  * Cette classe est pour effectuer la reconstruction et l'affichage de résultats.
@@ -26,6 +35,7 @@ public class GraphOfTemoins3D {
 	 * Contient W et P, pas plus.
 	 */
     private CTemoins3D temoins;
+    private Collection<Triangle_3> listT;
     
     /**
      * La structure de graphe. Il faut quand même savoir enfin quels sont les points
@@ -78,7 +88,7 @@ public class GraphOfTemoins3D {
     	for (PointTemoins3D pointT:temoins.getCloud()) {
     		pointT.setIndex(nb);
     		//for test
-    		//System.out.println(pointT.getIndex());
+    		System.out.println(pointT.getIndex());
     		nb+=1;
     	}
     }
@@ -109,7 +119,23 @@ public class GraphOfTemoins3D {
     			//System.out.println(i);
     		}
     		if (pointT.getFourNearestPoints().size()==4) {
-    			graph.addEdge(pointT.getFourNearestPoints().get(0).getIndex(), pointT.getFourNearestPoints().get(2).getIndex());
+    			graph.addEdge(pointT.getFourNearestPoints().get(0).getIndex(), pointT.getFourNearestPoints().get(3).getIndex());
+    		}
+    	}
+    }
+    
+    public void constructListOfTriangles() {
+    	listT = new ArrayList<Triangle_3>();
+    	Triangle_3 tempT;
+    	for (PointTemoins3D pointT:temoins.getCloud()) {
+    		//for test
+    		//System.out.println("da");
+    		ArrayList<PointTemoins3D> tempL = pointT.getFourNearestPoints();
+    		for (int i=0;i<pointT.getFourNearestPoints().size();i++) {
+    			tempT = new Triangle_3(tempL.get(i%4),tempL.get((i+1)%4),tempL.get((i+2)%4));
+    			//for test
+    			//System.out.println(i);
+    			listT.add(tempT);
     		}
     	}
     }
@@ -222,6 +248,21 @@ public class GraphOfTemoins3D {
     	spd.draw2D();
     }
     */
+    
+    public void draw3() {
+    	Collection<Point_3> listP = new ArrayList<Point_3>();
+    	for(PointTemoins3D pointT:temoins.getCloud()) {
+    		listP.add(pointT);
+    	}
+    	
+    	TransformGroup objTrans = new TransformGroup();
+    	Appearance ap = new Appearance();
+    	Color color = new Color(0);
+    	MeshRepresentation mp = new MeshRepresentation();
+    	mp.getFromTriangleSoup(listT);
+    	MeshViewer mesh = new MeshViewer(mp);
+    }
+    
     /**
      * Pour afficher tous les points donnés sans arête entre eux, mais la méthode
      * n'est pas encore complète.
@@ -320,6 +361,10 @@ public class GraphOfTemoins3D {
 		System.out.println(nbDeTemoins+" "+nbComposants+" "+nbCycles+" in "+temps+" mls");
     }
     
+    public void reconstruction3D(PointTemoins3D startingPoint) {
+    	
+    }
+    
     /**
      * Créer une instance de GraphOfTemoins à partir d'un fichier, puis afficher
      * pas à pas la reconstruction.
@@ -328,6 +373,8 @@ public class GraphOfTemoins3D {
     public static void main (String[] args) {
     	GraphOfTemoins3D gtm=new GraphOfTemoins3D(args[0]);
     	//gtm.reconstructAndViewAdvanced(gtm.temoins.getCloud().get(0), 150);
-    	gtm.reconstructionAdvanced(gtm.temoins.getCloud().get(0), 160);
+    	//gtm.reconstructionAdvanced(gtm.temoins.getCloud().get(0), 160);
+    	gtm.constructListOfTriangles();
+    	gtm.draw3();
     }
 }
