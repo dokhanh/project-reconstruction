@@ -320,7 +320,20 @@ public class GraphOfTemoins {
      */
     public static void main (String[] args) {
     	GraphOfTemoins gtm=new GraphOfTemoins(args[0]);
-    	gtm.reconstructAndViewAdvanced(gtm.temoins.getCloud().get(0), 200, 1000);
-    	//gtm.reconstruction(gtm.temoins.getCloud().get(0), 400);
+    	if (args.length!=4 && args.length!=3) {
+    		throw new Error("Parameters are: String filename + int number of Iterations + int advanced + (int time for showing in each iteration)");
+    	}
+    	if (args.length==4) {
+    		if (Integer.parseInt(args[2])==0) {
+    			gtm.reconstructAndView(gtm.temoins.getCloud().get(0), Integer.parseInt(args[1]), Integer.parseInt(args[3]));
+    		}
+    		else gtm.reconstructAndViewAdvanced(gtm.temoins.getCloud().get(0), Integer.parseInt(args[1]), Integer.parseInt(args[3]));
+    	}
+    	else {
+    		if (Integer.parseInt(args[2])==0) {
+    			gtm.reconstruction(gtm.temoins.getCloud().get(0), Integer.parseInt(args[1]));
+    		}
+    		else gtm.reconstructionAdvanced(gtm.temoins.getCloud().get(0), Integer.parseInt(args[1]));
+    	}
     }
 }
