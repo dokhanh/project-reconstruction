@@ -260,7 +260,7 @@ public class GraphOfTemoins3D {
     	Color color = new Color(0);
     	MeshRepresentation mp = new MeshRepresentation();
     	mp.getFromTriangleSoup(listT);
-    	MeshViewer mesh = new MeshViewer(mp);
+    	MeshViewer mesh = new MeshViewer(listP);
     }
     
     /**
