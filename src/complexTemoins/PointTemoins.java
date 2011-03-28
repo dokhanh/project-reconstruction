@@ -1,20 +1,19 @@
 package complexTemoins;
 
-import java.util.ArrayList;
-
 import Jcg.geometry.Point_2;
 import Jcg.geometry.Vector_2;
 
 /**
- * En fait je veux bien créer une classe pour les points qu'on va utiliser pour
- * notre pb, parce que cette nouvelle structure va contenir, pour chaque point,
- * adresses de deux points de P qui sont les plus proches, ça sert au fonctionnement
- * de l'algo complexe de témoins.
+ * Une classe héritée de {@link Point_2} pour l'implémentation de notre algorithme
+ * de complexe de témoins.
  * @author Khanh
  *
  */
 
 public class PointTemoins extends Point_2 {
+	/**
+	 * 
+	 */
 	Simplex simplex;
 	
 	SimplexFace face;
