@@ -1,0 +1,1 @@
+This is a project for implementing the geometric algorithm of reconstruction of forms from a cloud of points. Khanh and Jinye
